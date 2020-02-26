@@ -1,13 +1,9 @@
 import os
 import json
 import networkx as nx
-import pyro.distributions as dist
 import numpy as np
 from random import random
-from pyro import sample, condition
-from pyro.poutine import trace
 from flask import Flask, request
-from pprint import pprint
 
 app = Flask(__name__)
 

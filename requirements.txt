@@ -1,4 +1,3 @@
-pyro-ppl
 numpy
 flask
 networkx
