@@ -8,8 +8,6 @@ from flask import Flask, request
 app = Flask(__name__)
 
 port = os.environ.get("PORT", 8080)
-mcmc = 100
-dropout_rate = 0.25
 
 
 def maybe_add_node(G, node):
@@ -63,6 +61,8 @@ def dropout(G, rate):
 @app.route("/calculate", methods=["POST"])
 def calculate():
     data = request.json["review_matrix"]
+    iterations = request.json["iterations"]
+    dropout_rate = request.json["dropout"]
     # This matrix is of the form:
     #   [{reviewee_id -> [{reviewer_id -> latest_review_score}, ...}, ...]
 
@@ -78,7 +78,7 @@ def calculate():
 
     scores = {}
 
-    for i in range(mcmc):
+    for i in range(iterations):
         G_current = G.copy()
 
         if dropout_rate > 0.0:
@@ -118,7 +118,7 @@ def calculate():
             "mean": np.mean([np.mean(ix[1]) for ix in ranked]),
             "std": np.std([np.mean(ix[1]) for ix in ranked]),
             "median": np.median([np.mean(ix[1]) for ix in ranked]),
-            "iters": mcmc,
+            "iters": iterations,
             "dropout": dropout_rate,
             "employees": results,
         },
